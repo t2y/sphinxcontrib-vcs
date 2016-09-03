@@ -17,6 +17,15 @@ except (IOError, ImportError):
 version_py = open('sphinxcontrib/vcs.py').read()
 metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", version_py))
 
+requires = [
+    'GitPython',
+    'Sphinx',
+    'six',
+]
+
+if sys.version_info < (3, 0):
+    requires.append('Mercurial==3.8.2')
+
 
 setup(
     name='sphinxcontrib-vcs',
@@ -51,10 +60,6 @@ setup(
     packages=find_packages(),
     namespace_packages=['sphinxcontrib'],
     include_package_data=True,
-    install_requires=[
-        'GitPython',
-        'Sphinx',
-        'six',
-    ],
+    install_requires=requires,
     tests_require=['tox', 'pytest', 'pytest-pep8', 'pytest-flakes'],
 )
