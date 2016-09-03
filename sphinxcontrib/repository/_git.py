@@ -24,8 +24,9 @@ class GitRepository(Repo):
 
     EMPTY_TREE_SHA = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, max_count, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.max_count = max_count
         self._hexsha = {}
         self._commits = []
 
@@ -36,15 +37,16 @@ class GitRepository(Repo):
     def get_commits(self, max_count=None, **kwargs):
         if len(self._commits) == 0 or max_count is not None:
             self._commits[:] = []
-            if max_count is None:
-                max_count = 50
+            if max_count is not None:
+                self.max_count = max_count
 
-            g = enumerate(self.iter_commits(max_count=max_count, **kwargs))
+            count = self.max_count + 1
+            g = enumerate(self.iter_commits(max_count=count, **kwargs))
             for index, commit in g:
                 self._hexsha[commit.hexsha] = index
                 self._commits.append(commit)
 
-        return self._commits
+        return self._commits[:self.max_count]
 
     def get_diff(self, revision):
         if len(self._commits) == 0:
@@ -99,8 +101,10 @@ def test():
 
     commits = r.get_commits(max_count=3)
     print(commits)
-    last_diff = r.get_diff(commits[0].hexsha)
-    print(last_diff)
+
+    for commit in commits:
+        print(r.get_diff(commit.hexsha))
+
     commit_url = r.get_commit_url(commits[0].hexsha)
     print(commit_url)
 

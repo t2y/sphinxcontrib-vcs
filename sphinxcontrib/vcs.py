@@ -14,13 +14,17 @@ class BaseDirective(Directive):
 
     option_spec = {
         'include_diff': bool,
+        'number_of_revisions': int,
         'with_ref_url': bool,
     }
 
     def run(self):
         list_node = nodes.bullet_list()
         env = self.state.document.settings.env
-        repo = GitRepository(env.srcdir)
+
+        max_count = self.options.get('number_of_revisions', 10)
+        repo = GitRepository(
+            max_count, env.srcdir, search_parent_directories=True)
 
         targetnode = nodes.target('', '', ids=[self.TARGET_ID])
         for commit in repo.get_commits():
