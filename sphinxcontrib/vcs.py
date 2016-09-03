@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+
+import six
 from docutils import nodes
 from docutils.parsers.rst import Directive
 
@@ -40,11 +42,11 @@ class GitDirective(BaseDirective):
 
         commit_date = datetime.fromtimestamp(commit.authored_date)
 
-        item.append(nodes.strong(text=commit.message))
-        item.append(nodes.inline(text=' by '))
-        item.append(nodes.emphasis(text=commit.author.name))
-        item.append(nodes.inline(text=' at '))
-        item.append(nodes.emphasis(text=str(commit_date)))
+        item.append(nodes.strong(text=six.text_type(commit.message)))
+        item.append(nodes.inline(text=six.text_type(' by ')))
+        item.append(nodes.emphasis(text=six.text_type(commit.author.name)))
+        item.append(nodes.inline(text=six.text_type(' at ')))
+        item.append(nodes.emphasis(text=six.text_type(commit_date)))
 
         if self.options.get('with_ref_url') is not None:
             ref_url = repo.get_commit_url(commit.hexsha)
@@ -53,7 +55,7 @@ class GitDirective(BaseDirective):
 
         if self.options.get('include_diff') is not None:
             diff = repo.get_diff(commit.hexsha)
-            item.append(nodes.literal_block(text=diff))
+            item.append(nodes.literal_block(text=six.text_type(diff)))
 
         return item
 
