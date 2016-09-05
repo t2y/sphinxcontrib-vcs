@@ -1,0 +1,13 @@
+/* sphinxcontrib-vcs style */
+
+.contrib-vcs-message {
+    cursor: pointer;
+}
+
+.toggle-open {
+    display: inline;
+}
+
+.toggle-close {
+    display: none;
+}
