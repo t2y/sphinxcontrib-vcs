@@ -4,6 +4,7 @@ from datetime import datetime
 import six
 from docutils import nodes
 from docutils.parsers.rst import Directive
+from docutils.parsers.rst import directives
 
 from .repository import GitRepository
 from .repository import MercurialRepository
@@ -12,20 +13,25 @@ from .repository import find_repository_top
 __version__ = '0.1.0'
 
 
+OPTION_INCLUDE_DIFF = 'include_diff'
+OPTION_NUMBER_OF_REVISIONS = 'number_of_revisions'
+OPTION_WITH_REF_URL = 'with_ref_url'
+
+
 class BaseDirective(Directive):
 
     TARGET_ID = 'vcs'
 
     option_spec = {
-        'include_diff': bool,
-        'number_of_revisions': int,
-        'with_ref_url': bool,
+        OPTION_INCLUDE_DIFF: directives.flag,
+        OPTION_NUMBER_OF_REVISIONS: directives.positive_int,
+        OPTION_WITH_REF_URL: directives.flag,
     }
 
     def run(self):
         list_node = nodes.bullet_list()
 
-        number_of_revisions = self.options.get('number_of_revisions', 10)
+        number_of_revisions = self.options.get(OPTION_NUMBER_OF_REVISIONS, 10)
         repo = self.get_repo(number_of_revisions)
         if repo is None:
             return
@@ -55,12 +61,12 @@ class GitDirective(BaseDirective):
         commit_date = datetime.fromtimestamp(commit.authored_date)
         item.append(nodes.emphasis(text=six.text_type(commit_date)))
 
-        if self.options.get('with_ref_url') is not None:
+        if OPTION_WITH_REF_URL in self.options:
             ref_url = repo.get_commit_url(commit.hexsha)
             ref = nodes.reference('', commit.hexsha, refuri=ref_url)
             item.append(nodes.paragraph('', '', ref))
 
-        if self.options.get('include_diff') is not None:
+        if OPTION_INCLUDE_DIFF in self.options:
             diff = repo.get_diff(commit.hexsha)
             item.append(nodes.literal_block(text=six.text_type(diff)))
 
@@ -84,12 +90,12 @@ class MercurialDirective(BaseDirective):
         item.append(nodes.inline(text=six.text_type(' at ')))
         item.append(nodes.emphasis(text=six.text_type(commit['date'])))
 
-        if self.options.get('with_ref_url') is not None:
+        if OPTION_WITH_REF_URL in self.options:
             ref_url = repo.get_commit_url(commit['sha'])
             ref = nodes.reference('', commit['sha'], refuri=ref_url)
             item.append(nodes.paragraph('', '', ref))
 
-        if self.options.get('include_diff') is not None:
+        if OPTION_INCLUDE_DIFF in self.options:
             diff = repo.get_diff(commit['revision'])
             item.append(nodes.literal_block(text=six.text_type(diff)))
 
