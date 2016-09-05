@@ -7,12 +7,12 @@ from setuptools import find_packages, setup
 
 try:
     import pypandoc
-    LONG_DESCRIPTION = '\n'.join([
+    long_description = '\n'.join([
         pypandoc.convert('README.md', 'rst'),
         pypandoc.convert('CHANGELOG.md', 'rst'),
     ])
 except (IOError, ImportError):
-    LONG_DESCRIPTION = ''
+    long_description = ''
 
 version_py = open('sphinxcontrib/vcs.py').read()
 metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", version_py))
@@ -32,7 +32,7 @@ setup(
     name='sphinxcontrib-vcs',
     version=metadata['version'],
     description=description,
-    long_description=LONG_DESCRIPTION,
+    long_description=long_description,
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Development Status :: 3 - Alpha',
@@ -52,7 +52,7 @@ setup(
         'Topic :: Documentation :: Sphinx',
         'Topic :: Utilities',
     ],
-    url='https://github.com/t2y/...',
+    url='https://github.com/t2y/sphinxcontrib-vcs',
     license='BSD',
     author='Tetsuya Morimoto',
     author_email='tetsuya dot morimoto at gmail dot com',
