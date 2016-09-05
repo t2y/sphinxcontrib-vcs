@@ -3,9 +3,11 @@ from __future__ import absolute_import
 
 import re
 
+import gitdb
 from git import Repo
 
 from .utils import find_hosting_site, make_commit_url
+from .utils import log
 
 
 class GitRepository(Repo):
@@ -25,7 +27,27 @@ class GitRepository(Repo):
     def branch_name(self):
         return self.head.ref.name
 
-    def get_commits(self, max_count=None, **kwargs):
+    def get_commit(self, revision):
+        try:
+            commit = self.commit(revision)
+        except gitdb.exc.BadName as err:
+            log.error(err)
+            log.warn("Not found '%s' in git repository" % revision)
+        else:
+            self._commits.append(commit)
+            self._hexsha[commit.hexsha] = 0
+            if commit.parents:
+                prev_commit = commit.parents[0]
+                self._commits.append(prev_commit)
+                self._hexsha[prev_commit.hexsha] = 1
+            return commit
+
+    def get_commits(self, revision=None, max_count=None, **kwargs):
+        if revision is not None:
+            self.get_commit(revision)
+            self.max_count = 1
+            return self._commits[:self.max_count]
+
         if len(self._commits) == 0 or max_count is not None:
             self._hexsha.clear()
             self._commits[:] = []

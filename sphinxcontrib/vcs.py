@@ -15,7 +15,14 @@ __version__ = '0.1.0'
 
 OPTION_INCLUDE_DIFF = 'include_diff'
 OPTION_NUMBER_OF_REVISIONS = 'number_of_revisions'
+OPTION_REVISION = 'revision'
 OPTION_WITH_REF_URL = 'with_ref_url'
+
+
+def get_revision(argument):
+    if argument is None:
+        raise ValueError('revision string required as argument')
+    return argument.strip()
 
 
 class BaseDirective(Directive):
@@ -25,6 +32,7 @@ class BaseDirective(Directive):
     option_spec = {
         OPTION_INCLUDE_DIFF: directives.flag,
         OPTION_NUMBER_OF_REVISIONS: directives.positive_int,
+        OPTION_REVISION: get_revision,
         OPTION_WITH_REF_URL: directives.flag,
     }
 
@@ -37,7 +45,8 @@ class BaseDirective(Directive):
             return
 
         targetnode = nodes.target('', '', ids=[self.TARGET_ID])
-        for commit in repo.get_commits():
+        revision = self.options.get(OPTION_REVISION)
+        for commit in repo.get_commits(revision=revision):
             item = self.get_changelog(repo, commit)
             list_node.append(item)
         return targetnode + [list_node]
