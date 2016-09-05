@@ -1,0 +1,6 @@
+include MANIFEST.in
+include LICENSE
+include README.md
+include CHANGELOG.md
+recursive-include sphinxcontrib/_static *.html *.css *.js
+recursive-include tests *.py *.rst
