@@ -16,7 +16,7 @@ except (IOError, ImportError):
 
 version_py = open('sphinxcontrib/vcs.py').read()
 metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", version_py))
-description='Sphinx extension to show commit history in version control system'
+desc = 'Sphinx extension to show commit history in version control system'
 
 requires = [
     'GitPython',
@@ -31,7 +31,7 @@ if sys.version_info < (3, 0):
 setup(
     name='sphinxcontrib-vcs',
     version=metadata['version'],
-    description=description,
+    description=desc,
     long_description=long_description,
     classifiers=[
         'License :: OSI Approved :: BSD License',
@@ -62,5 +62,7 @@ setup(
     namespace_packages=['sphinxcontrib'],
     include_package_data=True,
     install_requires=requires,
-    tests_require=['tox', 'pytest', 'pytest-pep8', 'pytest-flakes'],
+    tests_require=[
+        'flake8', 'mock', 'nose', 'reportlab', 'sphinx-testing',
+    ],
 )
