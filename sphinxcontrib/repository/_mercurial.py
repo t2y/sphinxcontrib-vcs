@@ -5,6 +5,7 @@ import re
 
 try:
     from mercurial import ui, hg, commands
+    from mercurial.error import RepoLookupError
 except ImportError:
     pass
 
@@ -62,7 +63,28 @@ class MercurialRepository(object):
                     commit[type_] = value
         return index, commit
 
-    def get_commits(self, limit=None):
+    def get_commit(self, revision):
+        self.ui.pushbuffer()
+        try:
+            commands.log(self.ui, self.raw, rev=[str(revision)])
+        except RepoLookupError as err:
+            log.error(err)
+            log.warn("Not found '%s' in mercurial repository" % revision)
+        else:
+            lines = self.ui.popbuffer().decode('utf-8').split('\n')
+            index, commit = self.read_changeset_lines(lines)
+            changeset = commit.get('changeset')
+            if changeset is not None:
+                self._commits.append(commit)
+                self._changeset[changeset] = commit
+            return commit
+
+    def get_commits(self, revision=None, limit=None):
+        if revision is not None:
+            self.get_commit(revision)
+            self.limit = 1
+            return self._commits[:self.limit]
+
         if len(self._commits) == 0 or limit is not None:
             self._commits[:] = []
             if limit is not None:
