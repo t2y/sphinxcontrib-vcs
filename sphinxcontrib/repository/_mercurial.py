@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-import logging
 import re
 
 try:
@@ -10,13 +9,8 @@ except ImportError:
     pass
 
 from .utils import find_hosting_site, find_repository_top
+from .utils import log
 from .utils import make_commit_url
-
-logging.basicConfig(
-    format='%(asctime)s %(name)s %(levelname)s %(message)s',
-    level=logging.INFO,
-)
-log = logging.getLogger('sphinxcontrib-vcs')
 
 
 class MercurialRepository(object):

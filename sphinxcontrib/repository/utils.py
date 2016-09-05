@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import logging
 import os
 import re
 
@@ -14,6 +15,12 @@ HOSTING_SERVICE = {
         'commit_template': '{site}/{user}/{repository}/commits/{sha}',
     },
 }
+
+logging.basicConfig(
+    format='%(asctime)s %(name)s %(levelname)s %(message)s',
+    level=logging.INFO,
+)
+log = logging.getLogger('sphinxcontrib-vcs')
 
 
 def find_hosting_site(url):
