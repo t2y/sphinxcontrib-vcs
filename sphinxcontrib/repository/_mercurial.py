@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+import os
 import re
 
 try:
@@ -18,7 +19,10 @@ class MercurialRepository(object):
 
     LOG_PATTERN = re.compile(r'(?P<type>\w+):[\t\s]+(?P<value>.*)')
     URL_PATTERN = re.compile(
-        r'ssh://hg@bitbucket.org/(?P<account>.*?)/(?P<repository_name>.*?)$'
+        r"""
+        ssh://hg@bitbucket.org/(?P<account>.*?)/(?P<repository_name>.*?)$
+        |https://.+?@bitbucket.org/(?P<account_>.*?)/(?P<repository_name_>.*?)$
+        """, re.VERBOSE
     )
 
     def __init__(self, limit, path):
@@ -27,21 +31,17 @@ class MercurialRepository(object):
         self.raw = hg.repository(self.ui, path=path)
         self._changeset = {}
         self._commits = []
-        self.set_default_path()
+        self.set_default_path(path)
 
-    def set_default_path(self):
-        self.ui.pushbuffer()
-        commands.paths(self.ui, self.raw, search='default')
-        lines = self.ui.popbuffer().decode('utf-8').split('\n')
-        if len(lines) > 0:
-            _path = lines[0]
-            if _path.split('/')[-1] == '...':
-                # FIXME: how to get repository name
-                repository_name = self.raw.root.split('/')[-1]
-                _path = _path.replace('...', repository_name)
-            self.default_path = _path
-        else:
-            self.default_path = ''
+    def set_default_path(self, path):
+        # FIXME: how to get default path
+        # for some reason, commands.paths() doesn't return default path
+        self.default_path = ''
+        with open(os.path.join(path, '.hg', 'hgrc')) as f:
+            for line in f:
+                if line.startswith('default'):
+                    self.default_path = line.split('=')[1].strip()
+                    break
 
     def read_changeset_lines(self, lines):
         is_found, commit = False, {}

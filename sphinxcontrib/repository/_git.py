@@ -14,7 +14,10 @@ class GitRepository(Repo):
 
     EMPTY_TREE_SHA = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
     URL_PATTERN = re.compile(
-        r'git@.*?:(?P<account>.*?)/(?P<repository_name>.*?)\.git',
+        r"""
+        git@.*?:(?P<account>.*?)/(?P<repository_name>.*?)\.git
+        |https://github.com/(?P<account_>.*?)/(?P<repository_name_>.*?)\.git
+        """, re.VERBOSE
     )
 
     def __init__(self, max_count, *args, **kwargs):

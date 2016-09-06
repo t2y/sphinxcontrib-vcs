@@ -37,7 +37,7 @@ def find_repository_top(current_dir, conf_dir):
         return None
 
     if os.path.exists(repository_dir) and os.path.isdir(repository_dir):
-        return current_dir
+        return os.path.abspath(current_dir)
     else:
         parent_dir = os.path.join(current_dir, os.path.pardir)
         return find_repository_top(parent_dir, conf_dir)
@@ -49,9 +49,11 @@ def make_commit_url(pattern, path, site, revision):
         return ''
 
     info = m.groupdict()
+    account = info.get('account') or info.get('account_')
+    repository = info.get('repository_name') or info.get('repository_name_')
     return site['commit_template'].format(
         site=site['site'],
-        user=info['account'],
-        repository=info['repository_name'],
+        user=account,
+        repository=repository,
         sha=revision,
     )
