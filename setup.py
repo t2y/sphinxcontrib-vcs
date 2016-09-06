@@ -25,7 +25,7 @@ requires = [
 ]
 
 if sys.version_info < (3, 0):
-    requires.append('Mercurial==3.8.2')
+    requires.append('Mercurial')
 
 
 setup(
