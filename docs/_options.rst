@@ -1,5 +1,5 @@
-Common options
---------------
+Options
+-------
 
 Each repository directive take these options.
 
@@ -24,4 +24,4 @@ Each repository directive take these options.
   Set as a flag to show diff text with commit history.
   The diff text is hidden with initial state.
   Clicking around commit message shows the diff text.
- 
+

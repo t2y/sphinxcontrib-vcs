@@ -8,6 +8,8 @@ Mercurial directive
 .. contents:: contents
    :local:
 
+.. include:: _options.rst
+
 Top commit history
 ------------------
 
