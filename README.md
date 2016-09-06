@@ -32,7 +32,7 @@ Then, repository directives are available as follows.
         :with_ref_url:
         :include_diff:
 
-For more information have a look at the documentation.
+For more information have a look at [the documentation](https://pythonhosted.org/sphinxcontrib-vcs/).
 
 ## Note
 
