@@ -1,7 +1,7 @@
 Options
 -------
 
-Each repository directive take these options.
+The repository directive takes these options.
 
 - **number_of_revisions**: positive integer
 
