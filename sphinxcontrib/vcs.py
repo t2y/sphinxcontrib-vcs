@@ -27,6 +27,10 @@ def get_revision(argument):
     return argument.strip()
 
 
+def is_merge(commit):
+    return commit.message[0:6] == 'Merged'
+
+
 OPTION_INCLUDE_DIFF = 'include_diff'
 OPTION_NUMBER_OF_REVISIONS = 'number_of_revisions'
 OPTION_REVISION = 'revision'
@@ -62,8 +66,9 @@ class BaseDirective(Directive):
 
         revision = self.options.get(OPTION_REVISION)
         for commit in repo.get_commits(revision=revision):
-            item = self.get_changelog(repo, commit)
-            list_node.append(item)
+            if is_merge(commit):
+                item = self.get_changelog(repo, commit)
+                list_node.append(item)
         return [list_node]
 
 
