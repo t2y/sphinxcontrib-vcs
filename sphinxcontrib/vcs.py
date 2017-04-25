@@ -35,6 +35,7 @@ OPTION_INCLUDE_DIFF = 'include_diff'
 OPTION_NUMBER_OF_REVISIONS = 'number_of_revisions'
 OPTION_REVISION = 'revision'
 OPTION_WITH_REF_URL = 'with_ref_url'
+OPTION_ONLY_MERGE = 'only_merge'
 
 
 class BaseDirective(Directive):
@@ -44,6 +45,7 @@ class BaseDirective(Directive):
         OPTION_NUMBER_OF_REVISIONS: directives.positive_int,
         OPTION_REVISION: get_revision,
         OPTION_WITH_REF_URL: directives.flag,
+        OPTION_ONLY_MERGE: directives.flag,
     }
 
     def _make_message_node(self, message, sha):
@@ -66,9 +68,10 @@ class BaseDirective(Directive):
 
         revision = self.options.get(OPTION_REVISION)
         for commit in repo.get_commits(revision=revision):
-            if is_merge(commit):
-                item = self.get_changelog(repo, commit)
-                list_node.append(item)
+            if OPTION_ONLY_MERGE in self.options and not(is_merge(commit)):
+                continue
+            item = self.get_changelog(repo, commit)
+            list_node.append(item)
         return [list_node]
 
 
