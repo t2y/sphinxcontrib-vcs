@@ -1,11 +1,22 @@
 language: python
-python: 3.6
-env:
-  matrix:
-    - TOXENV=py34
-    - TOXENV=py35
-    - TOXENV=py36
-    - TOXENV=py37
+matrix:
+  include:
+    - os: linux
+      sudo: required
+      python: 3.4
+      env: TOXENV=py34
+    - os: linux
+      sudo: required
+      python: 3.5
+      env: TOXENV=py35
+    - os: linux
+      sudo: required
+      python: 3.6
+      env: TOXENV=py36
+    - os: linux
+      sudo: required
+      python: 3.7
+      env: TOXENV=py37
 
 install: pip install docutils tox
 script: tox
