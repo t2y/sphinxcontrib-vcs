@@ -18,7 +18,6 @@ desc = 'Sphinx extension to show commit history in version control system'
 requires = [
     'GitPython',
     'Sphinx',
-    'six',
 ]
 
 

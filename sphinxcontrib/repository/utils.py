@@ -1,8 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import
-
 import logging
-import os
 import re
 
 HOSTING_SERVICE = {
@@ -29,18 +25,6 @@ def find_hosting_site(url):
     elif url.find('bitbucket.org') > 0:
         return HOSTING_SERVICE['bitbucket']
     return None
-
-
-def find_repository_top(current_dir, conf_dir):
-    repository_dir = os.path.abspath(os.path.join(current_dir, conf_dir))
-    if repository_dir == os.path.abspath(os.sep):
-        return None
-
-    if os.path.exists(repository_dir) and os.path.isdir(repository_dir):
-        return os.path.abspath(current_dir)
-    else:
-        parent_dir = os.path.join(current_dir, os.path.pardir)
-        return find_repository_top(parent_dir, conf_dir)
 
 
 def make_commit_url(pattern, path, site, revision):

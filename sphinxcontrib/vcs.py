@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 import os
 from datetime import datetime
 
-import six
 from docutils import nodes
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst import directives
+from sphinx.util import logging
 from sphinx.util.osutil import copyfile
 
 from .repository import GitRepository
-from .repository import MercurialRepository
-from .repository import find_repository_top
 
 __version__ = '0.1.0'
+
+logger = logging.getLogger(__name__)
 
 CSS_CLASS = {
     'diff': ['contrib-vcs-diff', 'toggle-close'],
@@ -43,7 +42,7 @@ class BaseDirective(Directive):
     }
 
     def _make_message_node(self, message, sha):
-        message, classes = six.text_type(message), []
+        message, classes = message, []
         if OPTION_INCLUDE_DIFF in self.options:
             classes = CSS_CLASS['message']
         return nodes.strong(ids=[sha], text=message, classes=classes)
@@ -79,12 +78,12 @@ class GitDirective(BaseDirective):
         item = nodes.list_item()
 
         item.append(self._make_message_node(commit.message, commit.hexsha))
-        item.append(nodes.inline(text=six.text_type(' by ')))
-        item.append(nodes.emphasis(text=six.text_type(commit.author.name)))
-        item.append(nodes.inline(text=six.text_type(' at ')))
+        item.append(nodes.inline(text=' by '))
+        item.append(nodes.emphasis(text=commit.author.name))
+        item.append(nodes.inline(text=' at '))
 
         commit_date = datetime.fromtimestamp(commit.authored_date)
-        item.append(nodes.emphasis(text=six.text_type(commit_date)))
+        item.append(nodes.emphasis(text=commit_date))
 
         if OPTION_WITH_REF_URL in self.options:
             ref_url = repo.get_commit_url(commit.hexsha)
@@ -94,36 +93,6 @@ class GitDirective(BaseDirective):
         if OPTION_INCLUDE_DIFF in self.options:
             diff = repo.get_diff(commit.hexsha)
             item.append(self._make_diff_node(diff, commit.hexsha))
-
-        return item
-
-
-class MercurialDirective(BaseDirective):
-
-    def get_repo(self, number_of_revisions):
-        env = self.state.document.settings.env
-        src_dir = find_repository_top(env.srcdir, '.hg')
-        if src_dir is None:
-            return None
-        return MercurialRepository(number_of_revisions, src_dir)
-
-    def get_changelog(self, repo, commit):
-        item = nodes.list_item()
-
-        item.append(self._make_message_node(commit['summary'], commit['sha']))
-        item.append(nodes.inline(text=six.text_type(' by ')))
-        item.append(nodes.emphasis(text=six.text_type(commit['user'])))
-        item.append(nodes.inline(text=six.text_type(' at ')))
-        item.append(nodes.emphasis(text=six.text_type(commit['date'])))
-
-        if OPTION_WITH_REF_URL in self.options:
-            ref_url = repo.get_commit_url(commit['sha'])
-            ref = nodes.reference('', commit['sha'], refuri=ref_url)
-            item.append(nodes.paragraph('', '', ref))
-
-        if OPTION_INCLUDE_DIFF in self.options:
-            diff = repo.get_diff(commit['revision'])
-            item.append(self._make_diff_node(diff, commit['sha']))
 
         return item
 
@@ -149,17 +118,16 @@ def copy_assets(app, exception):
     current_path = os.path.abspath(os.path.dirname(__file__))
     static_path = app.builder.config.html_static_path[0]
 
-    app.info('Copying vcs stylesheet/javascript... ', nonl=True)
+    logger.info('Copying vcs stylesheet/javascript... ', nonl=True)
     for file_ in CSS_FILES + JS_FILES:
         dest = os.path.join(app.builder.outdir, static_path, file_)
         source = os.path.join(current_path, static_path, file_)
         copyfile(source, dest)
-    app.info('done')
+    logger.info('done')
 
 
 def setup(app):
     app.add_directive('git', GitDirective)
-    app.add_directive('mercurial', MercurialDirective)
 
     # copying css/js to _static
     app.connect('builder-inited', add_assets)
