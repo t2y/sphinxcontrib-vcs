@@ -1,10 +1,11 @@
 language: python
-python: 2.7
+python: 3.6
 env:
   matrix:
-    - TOXENV=py27
-    - TOXENV=py33
     - TOXENV=py34
+    - TOXENV=py35
+    - TOXENV=py36
+    - TOXENV=py37
 
 install: pip install docutils tox
 script: tox
