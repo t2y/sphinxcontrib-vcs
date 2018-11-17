@@ -12,7 +12,7 @@ class GitRepository(Repo):
     EMPTY_TREE_SHA = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
     URL_PATTERN = re.compile(
         r"""
-        git@.*?:(?P<account>.*?)/(?P<repository_name>.*?)\.git
+        git@(?P<domain>.*?):(?P<account>.*?)/(?P<repository_name>.*?)\.git
         |https://github.com/(?P<account_>.*?)/(?P<repository_name_>.*?)\.git
         """, re.VERBOSE
     )
@@ -78,12 +78,9 @@ class GitRepository(Repo):
         if len(self._commits) == 0:
             self.get_commits()
 
+        url = self.remotes.origin.url
         site = find_hosting_site(self.remotes.origin.url)
-        if site is None:
-            return ''
-
-        return make_commit_url(
-            self.URL_PATTERN, self.remotes.origin.url, site, revision)
+        return make_commit_url(self.URL_PATTERN, url, site, revision)
 
 
 def get_repo(path):
