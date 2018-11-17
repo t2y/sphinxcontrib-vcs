@@ -30,3 +30,13 @@ For more information have a look at [the documentation](https://pythonhosted.org
 
 *sphinxcontrib-vcs* is inspired from the [sphinx-git](https://github.com/OddBloke/sphinx-git).
 
+## ChangeLog
+
+### 0.2.0 (2018-11-17)
+
+* drop Python 2.7 support and mercurial feature
+* support internal git repository such as GitHub Enterprise
+
+### 0.1.0 (2016-09-06)
+
+* first release
