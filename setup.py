@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 import re
-import sys
-
-from setuptools import find_packages, setup
+from setuptools import setup
 
 
 try:
@@ -24,9 +21,6 @@ requires = [
     'six',
 ]
 
-if sys.version_info < (3, 0):
-    requires.append('Mercurial')
-
 
 setup(
     name='sphinxcontrib-vcs',
@@ -38,12 +32,11 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Software Development :: Libraries',
         'Environment :: Console',
@@ -55,10 +48,10 @@ setup(
     url='https://github.com/t2y/sphinxcontrib-vcs',
     license='BSD',
     author='Tetsuya Morimoto',
-    author_email='tetsuya dot morimoto at gmail dot com',
+    author_email='tetsuya.morimoto@gmail.com',
     zip_safe=False,
     platforms='any',
-    packages=find_packages(),
+    packages=['sphinxcontrib'],
     namespace_packages=['sphinxcontrib'],
     include_package_data=True,
     install_requires=requires,

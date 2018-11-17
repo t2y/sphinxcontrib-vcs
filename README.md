@@ -24,20 +24,7 @@ Then, repository directives are available as follows.
         :with_ref_url:
         :include_diff:
 
-
-### Mercurial
-
-    .. mercurial::
-        :number_of_revisions: 20
-        :with_ref_url:
-        :include_diff:
-
 For more information have a look at [the documentation](https://pythonhosted.org/sphinxcontrib-vcs/).
-
-## Note
-
-[Mercurial](https://www.mercurial-scm.org/) supports Python 2.x only.
-So *sphinxcontrib-vcs* supports the *mercurial* directive on Python 2.7.
 
 ## Acknowledgments
 
