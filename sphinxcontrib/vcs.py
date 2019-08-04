@@ -76,14 +76,17 @@ class GitDirective(BaseDirective):
 
     def get_changelog(self, repo, commit):
         item = nodes.list_item()
+        para = nodes.paragraph()
 
-        item.append(self._make_message_node(commit.message, commit.hexsha))
-        item.append(nodes.inline(text=' by '))
-        item.append(nodes.emphasis(text=commit.author.name))
-        item.append(nodes.inline(text=' at '))
+        para.append(self._make_message_node(commit.message, commit.hexsha))
+        para.append(nodes.inline(text=' by '))
+        para.append(nodes.emphasis(text=commit.author.name))
+        para.append(nodes.inline(text=' at '))
 
         commit_date = datetime.fromtimestamp(commit.authored_date)
-        item.append(nodes.emphasis(text=commit_date))
+        para.append(nodes.emphasis(text=commit_date))
+
+        item.append(para)
 
         if OPTION_WITH_REF_URL in self.options:
             ref_url = repo.get_commit_url(commit.hexsha)
