@@ -32,6 +32,10 @@ For more information have a look at [the documentation](https://sphinxcontrib-vc
 
 ## ChangeLog
 
+### 0.2.1 (2019-08-04)
+
+* fix wrong Docutils DTD list_item node thanks to amedama41
+
 ### 0.2.0 (2018-11-17)
 
 * drop Python 2.7 support and mercurial feature
