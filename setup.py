@@ -1,6 +1,6 @@
 import re
 from os import path
-from setuptools import setup
+from setuptools import find_packages, setup
 
 version_py = open('sphinxcontrib/vcs.py').read()
 metadata = dict(re.findall("__([a-z]+)__ = '([^']+)'", version_py))
@@ -39,7 +39,7 @@ setup(
     author_email='tetsuya.morimoto@gmail.com',
     zip_safe=False,
     platforms='any',
-    packages=['sphinxcontrib'],
+    packages=find_packages(),
     namespace_packages=['sphinxcontrib'],
     include_package_data=True,
     install_requires=[

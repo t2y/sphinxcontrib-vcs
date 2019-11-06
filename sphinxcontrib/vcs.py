@@ -9,7 +9,7 @@ from sphinx.util.osutil import copyfile
 
 from .repository import GitRepository
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 logger = logging.getLogger(__name__)
 
