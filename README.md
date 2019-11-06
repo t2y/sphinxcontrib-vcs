@@ -32,6 +32,10 @@ For more information have a look at [the documentation](https://sphinxcontrib-vc
 
 ## ChangeLog
 
+### 0.2.2 (2019-11-06)
+
+* fix packaging issue: cannot import sphinxcontrib.repository
+
 ### 0.2.1 (2019-08-04)
 
 * fix wrong Docutils DTD list_item node thanks to amedama41
