@@ -1,6 +1,6 @@
 # sphinxcontrib-vcs
 
-[![Build Status](https://travis-ci.org/t2y/sphinxcontrib-vcs.svg?branch=master)](https://travis-ci.org/t2y/sphinxcontrib-vcs/)
+![](https://github.com/kazamori/github-api-tools/workflows/Python%20package/badge.svg)
 
 *sphinxcontrib-vcs* provides showing commit history in version control system.
 
