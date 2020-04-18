@@ -1,7 +1,13 @@
 import logging
 import re
 
-HOSTING_SERVICE = {
+# type check
+from typing import Dict
+from typing import Optional
+from typing import Pattern
+
+
+HOSTING_SERVICE: Dict[str, Dict[str, Optional[str]]] = {
     'github': {
         'site': 'https://github.com',
         'commit_template': '{site}/{user}/{repository}/commit/{sha}',
@@ -23,7 +29,7 @@ logging.basicConfig(
 log = logging.getLogger('sphinxcontrib-vcs')
 
 
-def find_hosting_site(url):
+def find_hosting_site(url: str) -> Dict[str, Optional[str]]:
     if url.find('github.com') > 0:
         return HOSTING_SERVICE['github']
     elif url.find('bitbucket.org') > 0:
@@ -31,7 +37,8 @@ def find_hosting_site(url):
     return HOSTING_SERVICE['internal']
 
 
-def make_commit_url(pattern, path, site, revision):
+def make_commit_url(pattern: Pattern[str], path: str,
+                    site: Dict[str, Optional[str]], revision: str) -> str:
     m = re.match(pattern, path)
     if m is None:
         return ''
@@ -45,7 +52,9 @@ def make_commit_url(pattern, path, site, revision):
 
     account = info.get('account') or info.get('account_')
     repository = info.get('repository_name') or info.get('repository_name_')
-    return site['commit_template'].format(
+    commit_template = site['commit_template']
+    assert commit_template is not None
+    return commit_template.format(
         site=_site,
         user=account,
         repository=repository,

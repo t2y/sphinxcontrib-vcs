@@ -9,7 +9,17 @@ from sphinx.util.osutil import copyfile
 
 from .repository import GitRepository
 
-__version__ = '0.2.2'
+# type check
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from docutils.nodes import Node
+from git.objects.commit import Commit
+from sphinx.application import Sphinx
+
+
+__version__ = '0.3.0'
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +30,7 @@ CSS_CLASS = {
 }
 
 
-def get_revision(argument):
+def get_revision(argument: str) -> str:
     if argument is None:
         raise ValueError('revision string required as argument')
     return argument.strip()
@@ -34,30 +44,36 @@ OPTION_WITH_REF_URL = 'with_ref_url'
 
 class BaseDirective(Directive):
 
-    option_spec = {
+    option_spec: Dict[str, Callable[[str], Any]] = {
         OPTION_INCLUDE_DIFF: directives.flag,
         OPTION_NUMBER_OF_REVISIONS: directives.positive_int,
         OPTION_REVISION: get_revision,
         OPTION_WITH_REF_URL: directives.flag,
     }
 
-    def _make_message_node(self, message, sha):
+    def _make_message_node(self, message: str, sha: str) -> nodes.strong:
         message, classes = message, []
         if OPTION_INCLUDE_DIFF in self.options:
             classes = CSS_CLASS['message']
         return nodes.strong(ids=[sha], text=message, classes=classes)
 
-    def _make_diff_node(self, diff, sha):
+    def _make_diff_node(self, diff: str, sha: str) -> nodes.literal_block:
         classes = CSS_CLASS['diff']
         return nodes.literal_block(ids=[sha], text=diff, classes=classes)
 
-    def run(self):
+    def get_repo(self, number_of_revisions: int) -> GitRepository:
+        ...
+
+    def get_changelog(self, repo: GitRepository, commit: Commit) -> Node:
+        ...
+
+    def run(self) -> List[Node]:
         list_node = nodes.bullet_list()
 
         number_of_revisions = self.options.get(OPTION_NUMBER_OF_REVISIONS, 10)
         repo = self.get_repo(number_of_revisions)
         if repo is None:
-            return
+            return []
 
         revision = self.options.get(OPTION_REVISION)
         for commit in repo.get_commits(revision=revision):
@@ -68,13 +84,13 @@ class BaseDirective(Directive):
 
 class GitDirective(BaseDirective):
 
-    def get_repo(self, number_of_revisions):
+    def get_repo(self, number_of_revisions: int) -> GitRepository:
         env = self.state.document.settings.env
         return GitRepository(
             number_of_revisions, env.srcdir, search_parent_directories=True,
         )
 
-    def get_changelog(self, repo, commit):
+    def get_changelog(self, repo: GitRepository, commit: Commit) -> Node:
         item = nodes.list_item()
         para = nodes.paragraph()
 
@@ -84,7 +100,7 @@ class GitDirective(BaseDirective):
         para.append(nodes.inline(text=' at '))
 
         commit_date = datetime.fromtimestamp(commit.authored_date)
-        para.append(nodes.emphasis(text=commit_date))
+        para.append(nodes.emphasis(text=str(commit_date)))
 
         item.append(para)
 
@@ -104,14 +120,14 @@ CSS_FILES = ['contrib-vcs.css']
 JS_FILES = ['contrib-vcs.js']
 
 
-def add_assets(app):
+def add_assets(app: Sphinx) -> None:
     for file_ in CSS_FILES:
         app.add_css_file(file_)
     for file_ in JS_FILES:
         app.add_js_file(file_)
 
 
-def copy_assets(app, exception):
+def copy_assets(app: Sphinx, exception: Exception) -> None:
     if app.builder.name != 'html' or exception:
         return
 
@@ -129,7 +145,7 @@ def copy_assets(app, exception):
     logger.info('done')
 
 
-def setup(app):
+def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_directive('git', GitDirective)
 
     # copying css/js to _static

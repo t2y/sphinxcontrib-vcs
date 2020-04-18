@@ -6,33 +6,42 @@ from git import Repo
 from .utils import find_hosting_site, make_commit_url
 from .utils import log
 
+# type check
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Pattern
+from git.objects.commit import Commit
+
 
 class GitRepository(Repo):
 
     EMPTY_TREE_SHA = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
-    URL_PATTERN = re.compile(
+    URL_PATTERN: Pattern[str] = re.compile(
         r"""
         git@(?P<domain>.*?):(?P<account>.*?)/(?P<repository_name>.*?)\.git
         |https://github.com/(?P<account_>.*?)/(?P<repository_name_>.*?)\.git
         """, re.VERBOSE
     )
 
-    def __init__(self, max_count, *args, **kwargs):
+    def __init__(self, max_count: int, *args: Any, **kwargs: Any) -> None:
         super(GitRepository, self).__init__(*args, **kwargs)
-        self.max_count = max_count
-        self._hexsha = {}
-        self._commits = []
+        self.max_count: int = max_count
+        self._hexsha: Dict[str, int] = {}
+        self._commits: List[Commit] = []
 
     @property
-    def branch_name(self):
+    def branch_name(self) -> str:
         return self.head.ref.name
 
-    def get_commit(self, revision):
+    def get_commit(self, revision: str) -> Optional[Commit]:
         try:
             commit = self.commit(revision)
         except gitdb.exc.BadName as err:
             log.error(err)
             log.warn("Not found '%s' in git repository" % revision)
+            return None
         else:
             self._commits.append(commit)
             self._hexsha[commit.hexsha] = 0
@@ -42,7 +51,10 @@ class GitRepository(Repo):
                 self._hexsha[prev_commit.hexsha] = 1
             return commit
 
-    def get_commits(self, revision=None, max_count=None, **kwargs):
+    def get_commits(self,
+                    revision: Optional[str] = None,
+                    max_count: Optional[int] = None,
+                    **kwargs: Any) -> List[Commit]:
         if revision is not None:
             self.get_commit(revision)
             self.max_count = 1
@@ -62,7 +74,7 @@ class GitRepository(Repo):
 
         return self._commits[:self.max_count]
 
-    def get_diff(self, revision):
+    def get_diff(self, revision: str) -> str:
         if len(self._commits) == 0:
             self.get_commits()
 
@@ -76,7 +88,7 @@ class GitRepository(Repo):
             prev_hexsha = self.EMPTY_TREE_SHA
         return self.git.diff(prev_hexsha, target_commit.hexsha)
 
-    def get_commit_url(self, revision):
+    def get_commit_url(self, revision: str) -> str:
         if len(self._commits) == 0:
             self.get_commits()
 
@@ -85,11 +97,11 @@ class GitRepository(Repo):
         return make_commit_url(self.URL_PATTERN, url, site, revision)
 
 
-def get_repo(path):
-    return GitRepository(path, search_parent_directories=True)
+def get_repo(path: str) -> GitRepository:
+    return GitRepository(5, path=path, search_parent_directories=True)
 
 
-def test():
+def test() -> None:
     r = get_repo('.')
 
     commits = r.get_commits(max_count=3)
