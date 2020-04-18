@@ -46,7 +46,14 @@ setup(
         'GitPython',
         'Sphinx',
     ],
-    tests_require=[
-        'flake8', 'mock', 'nose', 'reportlab', 'sphinx-testing',
-    ],
+    extras_require={
+        'test': [
+            'pytest',
+            'pytest-flake8',
+        ],
+        'lint': [
+            'mypy',
+            'docutils-stubs',
+        ],
+    },
 )

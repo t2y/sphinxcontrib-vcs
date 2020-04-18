@@ -1,28 +1,26 @@
-# -*- coding: utf-8 -*-
-
-from sphinx_testing import with_app
+import pytest
 
 
-@with_app(buildername='html', srcdir='tests/docs/basic/')
+@pytest.mark.sphinx('html', testroot='basic/')
 def test_build_html(app, status, warning):
     app.builder.build_all()
 
 
-@with_app(buildername='singlehtml', srcdir='tests/docs/basic/')
+@pytest.mark.sphinx('html', testroot='basic/')
 def test_build_singlehtml(app, status, warning):
     app.builder.build_all()
 
 
-@with_app(buildername='latex', srcdir='tests/docs/basic/')
+@pytest.mark.sphinx(buildername='latex', srcdir='basic/')
 def test_build_latex(app, status, warning):
     app.builder.build_all()
 
 
-@with_app(buildername='epub', srcdir='tests/docs/basic/')
+@pytest.mark.sphinx(buildername='epub', srcdir='basic/')
 def test_build_epub(app, status, warning):
     app.builder.build_all()
 
 
-@with_app(buildername='json', srcdir='tests/docs/basic/')
+@pytest.mark.sphinx(buildername='json', srcdir='basic/')
 def test_build_json(app, status, warning):
     app.builder.build_all()
