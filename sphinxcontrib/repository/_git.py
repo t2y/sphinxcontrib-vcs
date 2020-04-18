@@ -69,7 +69,7 @@ class GitRepository(Repo):
         index = self._hexsha[revision]
         target_commit = self._commits[index]
         if target_commit.parents:
-            if len(self._commits) < index + 1:
+            if len(self._commits) < index + 2:
                 return ''
             prev_hexsha = self._commits[index + 1].hexsha
         else:
