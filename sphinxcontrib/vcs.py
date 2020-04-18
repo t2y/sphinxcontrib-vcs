@@ -106,9 +106,9 @@ JS_FILES = ['contrib-vcs.js']
 
 def add_assets(app):
     for file_ in CSS_FILES:
-        app.add_stylesheet(file_)
+        app.add_css_file(file_)
     for file_ in JS_FILES:
-        app.add_javascript(file_)
+        app.add_js_file(file_)
 
 
 def copy_assets(app, exception):
