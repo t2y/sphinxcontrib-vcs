@@ -32,6 +32,11 @@ For more information have a look at [the documentation](https://sphinxcontrib-vc
 
 ## ChangeLog
 
+### 0.3.0 (2020-04-19)
+
+* drop Python 3.5 support
+* add type annotation and modules reference
+
 ### 0.2.2 (2019-11-06)
 
 * fix packaging issue: cannot import sphinxcontrib.repository
