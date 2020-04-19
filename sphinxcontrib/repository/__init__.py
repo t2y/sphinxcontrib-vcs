@@ -1,1 +1,4 @@
-from ._git import GitRepository  # noqa
+"""
+Define an implementation to handle each repository.
+"""
+from .git import GitRepository  # noqa

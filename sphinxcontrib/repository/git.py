@@ -1,3 +1,6 @@
+"""
+Implement Git repository.
+"""
 import re
 
 import gitdb
@@ -33,9 +36,15 @@ class GitRepository(Repo):
 
     @property
     def branch_name(self) -> str:
+        """
+        Represent branch name.
+        """
         return self.head.ref.name
 
     def get_commit(self, revision: str) -> Optional[Commit]:
+        """
+        Return `Commit` object of given revision.
+        """
         try:
             commit = self.commit(revision)
         except gitdb.exc.BadName as err:
@@ -55,6 +64,9 @@ class GitRepository(Repo):
                     revision: Optional[str] = None,
                     max_count: Optional[int] = None,
                     **kwargs: Any) -> List[Commit]:
+        """
+        Return List of `Commit` objects.
+        """
         if revision is not None:
             self.get_commit(revision)
             self.max_count = 1
@@ -75,6 +87,9 @@ class GitRepository(Repo):
         return self._commits[:self.max_count]
 
     def get_diff(self, revision: str) -> str:
+        """
+        Return diff string of given revision.
+        """
         if len(self._commits) == 0:
             self.get_commits()
 
@@ -89,6 +104,9 @@ class GitRepository(Repo):
         return self.git.diff(prev_hexsha, target_commit.hexsha)
 
     def get_commit_url(self, revision: str) -> str:
+        """
+        Return the commit URL of given revision.
+        """
         if len(self._commits) == 0:
             self.get_commits()
 

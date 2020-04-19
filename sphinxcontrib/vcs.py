@@ -1,3 +1,6 @@
+"""
+Define Sphinx directive to handle a repository.
+"""
 import os
 from datetime import datetime
 
@@ -68,6 +71,9 @@ class BaseDirective(Directive):
         ...
 
     def run(self) -> List[Node]:
+        """
+        Return list of `Node`.
+        """
         list_node = nodes.bullet_list()
 
         number_of_revisions = self.options.get(OPTION_NUMBER_OF_REVISIONS, 10)
@@ -85,12 +91,18 @@ class BaseDirective(Directive):
 class GitDirective(BaseDirective):
 
     def get_repo(self, number_of_revisions: int) -> GitRepository:
+        """
+        Return Git repository.
+        """
         env = self.state.document.settings.env
         return GitRepository(
             number_of_revisions, env.srcdir, search_parent_directories=True,
         )
 
     def get_changelog(self, repo: GitRepository, commit: Commit) -> Node:
+        """
+        Return changelog.
+        """
         item = nodes.list_item()
         para = nodes.paragraph()
 

@@ -22,10 +22,19 @@ Acknowledgments
 .. _sphinx-git: https://github.com/OddBloke/sphinx-git
 
 
+Modules
+=======
+
+.. currentmodule:: sphinxcontrib
+
+.. autosummary::
+
+    vcs
+    repository
+
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
